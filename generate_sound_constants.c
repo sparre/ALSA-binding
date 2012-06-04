@@ -3,8 +3,8 @@
 
 int main() {
    printf ("package Sound.Constants is\n");
-   printf ("   Capture_Stream    : constant := %u;\n", (unsigned int)SND_PCM_STREAM_CAPTURE);
    printf ("   Playback_Stream   : constant := %u;\n", (unsigned int)SND_PCM_STREAM_PLAYBACK);
+   printf ("   Capture_Stream    : constant := %u;\n", (unsigned int)SND_PCM_STREAM_CAPTURE);
    printf ("\n");
    printf ("   State_Open         : constant := %u;\n", (unsigned int)SND_PCM_STATE_OPEN);
    printf ("   State_Setup        : constant := %u;\n", (unsigned int)SND_PCM_STATE_SETUP);
