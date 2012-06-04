@@ -1,0 +1,8 @@
+syntax: glob
+*.o
+*.ali
+*~
+.config
+.config.sh
+generate_sound_constants
+sound-constants.ads
