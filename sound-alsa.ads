@@ -48,6 +48,8 @@ package Sound.ALSA is
                            size   : in snd_pcm_uframes_t) return snd_pcm_sframes_t;
    pragma Import (C, snd_pcm_readi);
 
+   procedure allocate_alsa_hardware_parameters (hwparams_ptr : access snd_pcm_hw_params_t_ptr);
+   pragma Import (C, allocate_alsa_hardware_parameters);
 private
    type void_ptr is new Interfaces.C.Strings.chars_ptr;
    type snd_pcm_t_ptr is new Interfaces.C.Strings.chars_ptr;
