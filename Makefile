@@ -25,7 +25,9 @@ install: build
 
 build-depends:
 	@test "$(DISTRIBUTION)" = "Debian wheezy/sid" && ( dpkg -l libasound2-dev | grep '^ii  libasound2-dev ' 1>/dev/null || sudo apt-get install libasound2-dev ) || true
+	@test "$(DISTRIBUTION)" = "Debian 6.0.1"      && ( dpkg -l libasound2-dev | grep '^ii  libasound2-dev ' 1>/dev/null || sudo apt-get install libasound2-dev ) || true
 	@test "$(DISTRIBUTION)" = "Debian 6.0.4"      && ( dpkg -l libasound2-dev | grep '^ii  libasound2-dev ' 1>/dev/null || sudo apt-get install libasound2-dev ) || true
+	@test "$(DISTRIBUTION)" = "Debian 6.0.5"      && ( dpkg -l libasound2-dev | grep '^ii  libasound2-dev ' 1>/dev/null || sudo apt-get install libasound2-dev ) || true
 	@test "$(DISTRIBUTION)" = "Ubuntu 11.10"      && ( dpkg -l libasound2-dev | grep '^ii  libasound2-dev ' 1>/dev/null || sudo apt-get install libasound2-dev ) || true
 
 style-check:
