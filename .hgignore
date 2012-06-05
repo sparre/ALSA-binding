@@ -6,3 +6,4 @@ syntax: glob
 .config.sh
 generate_sound_constants
 sound-constants.ads
+test_alsa_binding
