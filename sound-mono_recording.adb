@@ -2,7 +2,8 @@ with
   Interfaces.C.Strings;
 
 package body Sound.Mono_Recording is
-   procedure Open (Line : in out Line_Type) is
+   procedure Open (Line       : in out Line_Type;
+                   Resolution : in     Sample_Frequency) is
       use Interfaces.C, Interfaces.C.Strings;
       Name       : aliased char_array := To_C ("hw:0,0");
       Error      : Interfaces.C.int;

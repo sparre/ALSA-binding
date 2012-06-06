@@ -7,7 +7,8 @@ package Sound.Mono_Recording is
    for Frame'Size use 16;
    type Frame_Array is array (Positive range <>) of Frame;
 
-   procedure Open (Line : in out Line_Type);
+   procedure Open (Line       : in out Line_Type;
+                   Resolution : in     Sample_Frequency);
    function Is_Open (Line : in     Line_Type) return Boolean;
    procedure Close (Line : in out Line_Type);
    procedure Read (Line : in     Line_Type;
