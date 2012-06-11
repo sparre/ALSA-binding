@@ -6,6 +6,8 @@ with
 
 private
 package Sound.ALSA is
+   use type Interfaces.C.int;
+
    type void_ptr is private;
    type snd_pcm_t_ptr is private;
 
@@ -42,6 +44,14 @@ package Sound.ALSA is
    function snd_pcm_hw_params (pcm    : in    snd_pcm_t_ptr;
                                params : in    snd_pcm_hw_params_t_ptr) return Interfaces.C.int;
    pragma Import (C, snd_pcm_hw_params);
+
+   subtype Approximation_Direction is Interfaces.C.int range -1 .. 1;
+
+   function snd_pcm_hw_params_set_rate_near (pcm    : in     snd_pcm_t_ptr;
+                                             params : in     snd_pcm_hw_params_t_ptr;
+                                             val    : access Interfaces.C.unsigned;
+                                             dir    : access Approximation_Direction) return Interfaces.C.int;
+   pragma Import (C, snd_pcm_hw_params_set_rate_near);
 
    function snd_pcm_readi (pcm    : in snd_pcm_t_ptr;
                            buffer : in void_ptr;
