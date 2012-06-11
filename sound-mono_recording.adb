@@ -28,10 +28,10 @@ package body Sound.Mono_Recording is
          Approximation : aliased Sound.ALSA.Approximation_Direction := +1;
       begin
          Error := snd_pcm_hw_params_set_rate_near
-           (pcm    => Local_Line,
-            params => Settings,
-            val    => Sample_Rate'Access,
-            dir    => Approximation'Access);
+                    (pcm    => Local_Line,
+                     params => Settings,
+                     val    => Sample_Rate'Access,
+                     dir    => Approximation'Access);
 
          if Error /= 0 then
             raise Program_Error;
@@ -39,6 +39,19 @@ package body Sound.Mono_Recording is
 
          Resolution := Sample_Frequency (Sample_Rate);
       end Set_Sample_Frequency;
+
+  Set_Recording_Format:
+      begin
+         Error := snd_pcm_hw_params_set_format
+                    (pcm    => Local_Line,
+                     params => Settings,
+                     format => Sound.ALSA.Unsigned_16_Bit_Little_Endian);
+
+         if Error /= 0 then
+            raise Program_Error;
+         end if;
+      end Set_Recording_Format;
+
 
       Line := Local_Line;
    end Open;
