@@ -18,11 +18,13 @@ package body Sound.Mono_Recording is
          raise Program_Error;
       end if;
 
-      Sound.ALSA.allocate_alsa_hardware_parameters (hwparams_ptr => Settings'Access);
+      Sound.ALSA.allocate_alsa_hardware_parameters
+        (hwparams_ptr => Settings'Access);
 
   Set_Sample_Frequency:
       declare
-         Sample_Rate   : aliased Interfaces.C.unsigned := Interfaces.C.unsigned (Resolution);
+         Sample_Rate   : aliased Interfaces.C.unsigned :=
+                           Interfaces.C.unsigned (Resolution);
          Approximation : aliased Sound.ALSA.Approximation_Direction := +1;
       begin
          Error := snd_pcm_hw_params_set_rate_near
@@ -47,7 +49,8 @@ package body Sound.Mono_Recording is
       case snd_pcm_state (Line) is
          when Prepared | Running =>
             return True;
-         when Open | Setup | XRun | Draining | Paused | Suspended | Disconnected =>
+         when Open | Setup | XRun | Draining | Paused | Suspended
+                | Disconnected =>
             return False;
       end case;
    end Is_Open;
