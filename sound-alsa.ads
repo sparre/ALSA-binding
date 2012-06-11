@@ -32,33 +32,38 @@ package Sound.ALSA is
    type snd_pcm_sframes_t is new Interfaces.C.long;
    type snd_pcm_uframes_t is new Interfaces.C.unsigned_long;
 
-   function snd_pcm_open (pcmp   : access snd_pcm_t_ptr;
-                          name   : in     Interfaces.C.Strings.chars_ptr;
-                          stream : in     snd_pcm_stream_t;
-                          mode   : in     Interfaces.C.int) return Interfaces.C.int;
+   function snd_pcm_open
+     (pcmp   : access snd_pcm_t_ptr;
+      name   : in     Interfaces.C.Strings.chars_ptr;
+      stream : in     snd_pcm_stream_t;
+      mode   : in     Interfaces.C.int) return Interfaces.C.int;
    pragma Import (C, snd_pcm_open);
 
    function snd_pcm_state (pcm : in     snd_pcm_t_ptr) return snd_pcm_state_t;
    pragma Import (C, snd_pcm_state);
 
-   function snd_pcm_hw_params (pcm    : in    snd_pcm_t_ptr;
-                               params : in    snd_pcm_hw_params_t_ptr) return Interfaces.C.int;
+   function snd_pcm_hw_params
+     (pcm    : in    snd_pcm_t_ptr;
+      params : in    snd_pcm_hw_params_t_ptr) return Interfaces.C.int;
    pragma Import (C, snd_pcm_hw_params);
 
    subtype Approximation_Direction is Interfaces.C.int range -1 .. 1;
 
-   function snd_pcm_hw_params_set_rate_near (pcm    : in     snd_pcm_t_ptr;
-                                             params : in     snd_pcm_hw_params_t_ptr;
-                                             val    : access Interfaces.C.unsigned;
-                                             dir    : access Approximation_Direction) return Interfaces.C.int;
+   function snd_pcm_hw_params_set_rate_near
+     (pcm    : in     snd_pcm_t_ptr;
+      params : in     snd_pcm_hw_params_t_ptr;
+      val    : access Interfaces.C.unsigned;
+      dir    : access Approximation_Direction) return Interfaces.C.int;
    pragma Import (C, snd_pcm_hw_params_set_rate_near);
 
-   function snd_pcm_readi (pcm    : in snd_pcm_t_ptr;
-                           buffer : in void_ptr;
-                           size   : in snd_pcm_uframes_t) return snd_pcm_sframes_t;
+   function snd_pcm_readi
+     (pcm    : in snd_pcm_t_ptr;
+      buffer : in void_ptr;
+      size   : in snd_pcm_uframes_t) return snd_pcm_sframes_t;
    pragma Import (C, snd_pcm_readi);
 
-   procedure allocate_alsa_hardware_parameters (hwparams_ptr : access snd_pcm_hw_params_t_ptr);
+   procedure allocate_alsa_hardware_parameters
+     (hwparams_ptr : access snd_pcm_hw_params_t_ptr);
    pragma Import (C, allocate_alsa_hardware_parameters);
 private
    type void_ptr is new Interfaces.C.Strings.chars_ptr;
