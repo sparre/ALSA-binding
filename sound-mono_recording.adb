@@ -45,13 +45,12 @@ package body Sound.Mono_Recording is
          Error := snd_pcm_hw_params_set_format
                     (pcm    => Local_Line,
                      params => Settings,
-                     format => Sound.ALSA.Unsigned_16_Bit_Little_Endian);
+                     format => Sound.ALSA.Unsigned_16_Bit);
 
          if Error /= 0 then
             raise Program_Error;
          end if;
       end Set_Recording_Format;
-
 
       Line := Local_Line;
    end Open;
