@@ -107,6 +107,8 @@ package Sound.ALSA is
       U18_3LE                       => Sound.Constants.Format_U18_3LE,
       U18_3BE                       => Sound.Constants.Format_U18_3BE);
    for snd_pcm_format_t'Size use Interfaces.C.int'Size;
+   function Signed_16_Bit return snd_pcm_format_t;
+   function Unsigned_16_Bit return snd_pcm_format_t;
 
    type snd_pcm_hw_params_t_ptr is private;
 
