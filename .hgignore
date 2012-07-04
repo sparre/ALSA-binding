@@ -2,6 +2,7 @@ syntax: glob
 *.o
 *.ali
 *~
+.*.swp
 .config
 .config.sh
 generate_sound_constants

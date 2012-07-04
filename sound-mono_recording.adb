@@ -68,14 +68,36 @@ package body Sound.Mono_Recording is
    end Is_Open;
 
    procedure Close (Line : in out Line_Type) is
+      use type Interfaces.C.int;
+      Error : Interfaces.C.int;
    begin
-      raise Program_Error;
+      Error := snd_pcm_close (Line);
+
+      if Error /= 0 then
+         raise Program_Error;
+      end if;
    end Close;
 
    procedure Read (Line : in     Line_Type;
                    Item :    out Frame_Array;
                    Last :    out Natural) is
+      Frame_Pointer : access Frame := Item (Item'First)'Access;
+      Void_Pointer  : Sound.ALSA.void_ptr;
+      for Void_Pointer'Address use Frame_Pointer'Address;
+      pragma Assert (Frame_Pointer'Size = Void_Pointer'Size);
+
+      use type Sound.ALSA.snd_pcm_sframes_t;
+      Received_Frame_Count : Sound.ALSA.snd_pcm_sframes_t;
    begin
-      raise Program_Error;
+      Received_Frame_Count := snd_pcm_readi
+                                (pcm    => Line,
+                                 buffer => Void_Pointer,
+                                 size   => Item'Length);
+
+      if Received_Frame_Count < 0 then
+         raise Program_Error;
+      else
+         Last := Item'First - 1 + Natural (Received_Frame_Count);
+      end if;
    end Read;
 end Sound.Mono_Recording;

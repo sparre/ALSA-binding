@@ -122,6 +122,9 @@ package Sound.ALSA is
       mode   : in     Interfaces.C.int) return Interfaces.C.int;
    pragma Import (C, snd_pcm_open);
 
+   function snd_pcm_close (pcm : in     snd_pcm_t_ptr) return Interfaces.C.int;
+   pragma Import (C, snd_pcm_close);
+
    function snd_pcm_state (pcm : in     snd_pcm_t_ptr) return snd_pcm_state_t;
    pragma Import (C, snd_pcm_state);
 

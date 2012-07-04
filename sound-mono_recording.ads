@@ -5,7 +5,7 @@ package Sound.Mono_Recording is
 
    type Frame is range 0 .. 2 ** 16 - 1;
    for Frame'Size use 16;
-   type Frame_Array is array (Positive range <>) of Frame;
+   type Frame_Array is array (Positive range <>) of aliased Frame;
 
    procedure Open (Line       : in out Line_Type;
                    Resolution : in out Sample_Frequency);
