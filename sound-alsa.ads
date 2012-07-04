@@ -110,7 +110,7 @@ package Sound.ALSA is
    function Signed_16_Bit return snd_pcm_format_t;
    function Unsigned_16_Bit return snd_pcm_format_t;
 
-   type snd_pcm_hw_params_t_ptr is private;
+   type snd_pcm_hw_params_t is private;
 
    type snd_pcm_sframes_t is new Interfaces.C.long;
    type snd_pcm_uframes_t is new Interfaces.C.unsigned_long;
@@ -128,23 +128,28 @@ package Sound.ALSA is
    function snd_pcm_state (pcm : in     snd_pcm_t_ptr) return snd_pcm_state_t;
    pragma Import (C, snd_pcm_state);
 
+   function snd_pcm_hw_params_any
+     (pcm    : in     snd_pcm_t_ptr;
+      params : access snd_pcm_hw_params_t) return Interfaces.C.int;
+   pragma Import (C, snd_pcm_hw_params_any);
+
    function snd_pcm_hw_params
-     (pcm    : in    snd_pcm_t_ptr;
-      params : in    snd_pcm_hw_params_t_ptr) return Interfaces.C.int;
+     (pcm    : in     snd_pcm_t_ptr;
+      params : access snd_pcm_hw_params_t) return Interfaces.C.int;
    pragma Import (C, snd_pcm_hw_params);
 
    subtype Approximation_Direction is Interfaces.C.int range -1 .. 1;
 
    function snd_pcm_hw_params_set_rate_near
      (pcm    : in     snd_pcm_t_ptr;
-      params : in     snd_pcm_hw_params_t_ptr;
+      params : access snd_pcm_hw_params_t;
       val    : access Interfaces.C.unsigned;
       dir    : access Approximation_Direction) return Interfaces.C.int;
    pragma Import (C, snd_pcm_hw_params_set_rate_near);
 
    function snd_pcm_hw_params_set_format
      (pcm    : in     snd_pcm_t_ptr;
-      params : in     snd_pcm_hw_params_t_ptr;
+      params : access snd_pcm_hw_params_t;
       format : in     snd_pcm_format_t) return Interfaces.C.int;
    pragma Import (C, snd_pcm_hw_params_set_format);
 
@@ -153,12 +158,19 @@ package Sound.ALSA is
       buffer : in void_ptr;
       size   : in snd_pcm_uframes_t) return snd_pcm_sframes_t;
    pragma Import (C, snd_pcm_readi);
-
-   procedure allocate_alsa_hardware_parameters
-     (hwparams_ptr : access snd_pcm_hw_params_t_ptr);
-   pragma Import (C, allocate_alsa_hardware_parameters);
 private
    type void_ptr is new Interfaces.C.Strings.chars_ptr;
    type snd_pcm_t_ptr is new Interfaces.C.Strings.chars_ptr;
-   type snd_pcm_hw_params_t_ptr is new Interfaces.C.Strings.chars_ptr;
+
+   type hw_params_Bits is
+     array (1 .. Sound.Constants.hw_params_Size) of Boolean;
+   pragma Pack (hw_params_Bits);
+   for hw_params_Bits'Size use Sound.Constants.hw_params_Size;
+
+   type snd_pcm_hw_params_t is
+      record
+         Content : hw_params_Bits := (others => False);
+      end record;
+   pragma Pack (snd_pcm_hw_params_t);
+   for snd_pcm_hw_params_t'Size use Sound.Constants.hw_params_Size;
 end Sound.ALSA;

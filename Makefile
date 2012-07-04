@@ -37,8 +37,8 @@ distclean: clean
 	rm -f $(GENERATED_EXECUTABLES) $(GENERATED_SOURCE_FILES)
 	rm -f .config .config.sh
 
-#generate_sound_constants: generate_sound_constants.c
-#	gcc generate_sound_constants.c -lasound -o generate_sound_constants
+generate_sound_constants: generate_sound_constants.c
+	gnatgcc generate_sound_constants.c -lasound -o generate_sound_constants
 
 sound-constants.ads: generate_sound_constants
 	./generate_sound_constants > sound-constants.ads

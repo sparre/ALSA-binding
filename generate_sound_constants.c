@@ -65,6 +65,8 @@ int main() {
    printf ("   Error_Bad_File_Descriptor : constant := %u;\n", (unsigned int)EBADFD);
    printf ("   Error_Pipe                : constant := %u;\n", (unsigned int)EPIPE);
    printf ("   Error_Stream_Pipe         : constant := %u;\n", (unsigned int)ESTRPIPE);
+   printf ("\n");
+   printf ("   hw_params_Size : constant := %u;\n", (unsigned int)(8 * (snd_pcm_hw_params_sizeof())));
    printf ("end Sound.Constants;\n");
    return 0;
 };
