@@ -180,7 +180,7 @@ package body Sound.Mono_Recording is
       Error := snd_pcm_close (Line);
 
       if Error /= 0 then
-         raise Program_Error;
+         raise Program_Error with "snd_pcm_close failed: " & Error'Img;
       end if;
    end Close;
 
@@ -201,7 +201,8 @@ package body Sound.Mono_Recording is
                                  size   => Item'Length);
 
       if Received_Frame_Count < 0 then
-         raise Program_Error;
+         raise Program_Error with
+           "snd_pcm_readi failed: " & Received_Frame_Count'Img;
       else
          Last := Item'First - 1 + Natural (Received_Frame_Count);
       end if;
