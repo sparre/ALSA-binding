@@ -13,14 +13,22 @@ begin
                               Resolution  => Resolution,
                               Buffer_Size => Buffer_Size,
                               Period      => Period);
-   Ada.Text_IO.Put_Line ("Resolution [samples/s]: " &
-                           Sound.Sample_Frequency'Image (Resolution));
-   Ada.Text_IO.Put_Line ("Buffer size [s]: " &
-                           Duration'Image (Buffer_Size));
-   Ada.Text_IO.Put_Line ("Period [s]: " &
-                           Duration'Image (Period));
+   Ada.Text_IO.Put_Line
+     (File => Ada.Text_IO.Standard_Error,
+      Item => "Resolution [samples/s]: " &
+              Sound.Sample_Frequency'Image (Resolution));
+   Ada.Text_IO.Put_Line
+     (File => Ada.Text_IO.Standard_Error,
+      Item => "Buffer size [s]: " & Duration'Image (Buffer_Size));
+   Ada.Text_IO.Put_Line
+     (File => Ada.Text_IO.Standard_Error,
+      Item => "Period [s]: " & Duration'Image (Period));
    Sound.Mono_Recording.Read (Line => Microphone,
                               Item => Recording,
                               Last => Filled_To);
    Sound.Mono_Recording.Close (Line => Microphone);
+
+   for Index in Recording'First .. Filled_To loop
+      Ada.Text_IO.Put_Line (Recording (Index)'Img);
+   end loop;
 end Test_ALSA_Binding;

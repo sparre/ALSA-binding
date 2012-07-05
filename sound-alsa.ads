@@ -200,12 +200,6 @@ package Sound.ALSA is
      (pcm    : in     snd_pcm_t_ptr;
       params : access snd_pcm_hw_params_t) return Interfaces.C.int;
    pragma Import (C, snd_pcm_hw_params);
-
-   function snd_pcm_readi
-     (pcm    : in snd_pcm_t_ptr;
-      buffer : in void_ptr;
-      size   : in snd_pcm_uframes_t) return snd_pcm_sframes_t;
-   pragma Import (C, snd_pcm_readi);
 private
    type void_ptr is new Interfaces.C.Strings.chars_ptr;
    type snd_pcm_t_ptr is new Interfaces.C.Strings.chars_ptr;

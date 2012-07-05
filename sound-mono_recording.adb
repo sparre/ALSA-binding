@@ -187,17 +187,20 @@ package body Sound.Mono_Recording is
    procedure Read (Line : in     Line_Type;
                    Item :    out Frame_Array;
                    Last :    out Natural) is
-      Frame_Pointer : access Frame := Item (Item'First)'Access;
-      Void_Pointer  : Sound.ALSA.void_ptr;
-      for Void_Pointer'Address use Frame_Pointer'Address;
-      pragma Assert (Frame_Pointer'Size = Void_Pointer'Size);
+      pragma Unmodified (Item); -- As we cheat with "function snd_pcm_readi".
+
+      function snd_pcm_readi (pcm    : in     Line_Type;
+                              buffer : in     Frame_Array; -- actually "out"
+                              size   : in     ALSA.snd_pcm_uframes_t)
+        return ALSA.snd_pcm_sframes_t;
+      pragma Import (C, snd_pcm_readi);
 
       use type Sound.ALSA.snd_pcm_sframes_t;
       Received_Frame_Count : Sound.ALSA.snd_pcm_sframes_t;
    begin
       Received_Frame_Count := snd_pcm_readi
                                 (pcm    => Line,
-                                 buffer => Void_Pointer,
+                                 buffer => Item,
                                  size   => Item'Length);
 
       if Received_Frame_Count < 0 then
