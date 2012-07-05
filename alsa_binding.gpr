@@ -2,6 +2,6 @@ project ALSA_Binding is
    for Main use ("test_alsa_binding");
 
    package Linker is
-      for Default_Switches ("ada") use ("-lasound", "alsa_macros.o");
+      for Default_Switches ("ada") use ("-lasound");
    end Linker;
 end ALSA_Binding;
