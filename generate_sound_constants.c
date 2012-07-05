@@ -68,9 +68,12 @@ int main() {
    printf ("   Access_Read_Write_Interleaved       : constant := %u;\n", (unsigned int)SND_PCM_ACCESS_RW_INTERLEAVED);
    printf ("   Access_Read_Write_Noninterleaved    : constant := %u;\n", (unsigned int)SND_PCM_ACCESS_RW_NONINTERLEAVED);
    printf ("\n");
-   printf ("   Error_Bad_File_Descriptor : constant := %u;\n", (unsigned int)EBADFD);
-   printf ("   Error_Pipe                : constant := %u;\n", (unsigned int)EPIPE);
-   printf ("   Error_Stream_Pipe         : constant := %u;\n", (unsigned int)ESTRPIPE);
+   printf ("   Error_Bad_File_Descriptor     : constant := %u;\n", (unsigned int)EBADFD);
+   printf ("   Error_Pipe                    : constant := %u;\n", (unsigned int)EPIPE);
+   printf ("   Error_Stream_Pipe             : constant := %u;\n", (unsigned int)ESTRPIPE);
+   printf ("   Error_Interrupted_System_Call : constant := %u;\n", (unsigned int)EINTR);
+   printf ("   Error_Again                   : constant := %u;\n", (unsigned int)EAGAIN);
+   printf ("   Error_Unsupported_Feature     : constant := %u;\n", (unsigned int)ENOSYS);
    printf ("\n");
    printf ("   hw_params_Size : constant := %u;\n", (unsigned int)(8 * (snd_pcm_hw_params_sizeof())));
    printf ("end Sound.Constants;\n");
