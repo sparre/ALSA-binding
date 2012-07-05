@@ -110,10 +110,28 @@ package Sound.ALSA is
    function Signed_16_Bit return snd_pcm_format_t;
    function Unsigned_16_Bit return snd_pcm_format_t;
 
+   type snd_pcm_access_t is (Memory_Mapped_Interleaved,
+                             Memory_Mapped_Noninterleaved,
+                             Memory_Mapped_Complex,
+                             Read_Write_Interleaved,
+                             Read_Write_Noninterleaved);
+   for snd_pcm_access_t use
+     (Memory_Mapped_Interleaved    => Constants.Access_Memory_Mapped_Interleaved,
+      Memory_Mapped_Noninterleaved => Constants.Access_Memory_Mapped_Noninterleaved,
+      Memory_Mapped_Complex        => Constants.Access_Memory_Mapped_Complex,
+      Read_Write_Interleaved       => Constants.Access_Read_Write_Interleaved,
+      Read_Write_Noninterleaved    => Constants.Access_Read_Write_Noninterleaved);
+   for snd_pcm_access_t'Size use Interfaces.C.int'Size;
+
    type snd_pcm_hw_params_t is private;
 
    type snd_pcm_sframes_t is new Interfaces.C.long;
    type snd_pcm_uframes_t is new Interfaces.C.unsigned_long;
+
+   subtype Approximation_Direction is Interfaces.C.int range -1 .. 1;
+
+   type Boolean is new Standard.Boolean;
+   for Boolean'Size use Interfaces.C.unsigned'Size;
 
    function snd_pcm_open
      (pcmp   : access snd_pcm_t_ptr;
@@ -133,12 +151,29 @@ package Sound.ALSA is
       params : access snd_pcm_hw_params_t) return Interfaces.C.int;
    pragma Import (C, snd_pcm_hw_params_any);
 
-   function snd_pcm_hw_params
+   function snd_pcm_hw_params_set_rate_resample
      (pcm    : in     snd_pcm_t_ptr;
-      params : access snd_pcm_hw_params_t) return Interfaces.C.int;
-   pragma Import (C, snd_pcm_hw_params);
+      params : access snd_pcm_hw_params_t;
+      val    : in     Boolean) return Interfaces.C.int;
+   pragma Import (C, snd_pcm_hw_params_set_rate_resample);
 
-   subtype Approximation_Direction is Interfaces.C.int range -1 .. 1;
+   function snd_pcm_hw_params_set_access
+     (pcm    : in     snd_pcm_t_ptr;
+      params : access snd_pcm_hw_params_t;
+      val    : in     snd_pcm_access_t) return Interfaces.C.int;
+   pragma Import (C, snd_pcm_hw_params_set_access);
+
+   function snd_pcm_hw_params_set_format
+     (pcm    : in     snd_pcm_t_ptr;
+      params : access snd_pcm_hw_params_t;
+      format : in     snd_pcm_format_t) return Interfaces.C.int;
+   pragma Import (C, snd_pcm_hw_params_set_format);
+
+   function snd_pcm_hw_params_set_channels
+     (pcm    : in     snd_pcm_t_ptr;
+      params : access snd_pcm_hw_params_t;
+      val    : in     Interfaces.C.unsigned) return Interfaces.C.int;
+   pragma Import (C, snd_pcm_hw_params_set_channels);
 
    function snd_pcm_hw_params_set_rate_near
      (pcm    : in     snd_pcm_t_ptr;
@@ -147,11 +182,24 @@ package Sound.ALSA is
       dir    : access Approximation_Direction) return Interfaces.C.int;
    pragma Import (C, snd_pcm_hw_params_set_rate_near);
 
-   function snd_pcm_hw_params_set_format
+   function snd_pcm_hw_params_set_buffer_time_near
      (pcm    : in     snd_pcm_t_ptr;
       params : access snd_pcm_hw_params_t;
-      format : in     snd_pcm_format_t) return Interfaces.C.int;
-   pragma Import (C, snd_pcm_hw_params_set_format);
+      val    : access Interfaces.C.unsigned;
+      dir    : access Approximation_Direction) return Interfaces.C.int;
+   pragma Import (C, snd_pcm_hw_params_set_buffer_time_near);
+
+   function snd_pcm_hw_params_set_period_time_near
+     (pcm    : in     snd_pcm_t_ptr;
+      params : access snd_pcm_hw_params_t;
+      val    : access Interfaces.C.unsigned;
+      dir    : access Approximation_Direction) return Interfaces.C.int;
+   pragma Import (C, snd_pcm_hw_params_set_period_time_near);
+
+   function snd_pcm_hw_params
+     (pcm    : in     snd_pcm_t_ptr;
+      params : access snd_pcm_hw_params_t) return Interfaces.C.int;
+   pragma Import (C, snd_pcm_hw_params);
 
    function snd_pcm_readi
      (pcm    : in snd_pcm_t_ptr;
@@ -163,7 +211,7 @@ private
    type snd_pcm_t_ptr is new Interfaces.C.Strings.chars_ptr;
 
    type hw_params_Bits is
-     array (1 .. Sound.Constants.hw_params_Size) of Boolean;
+     array (1 .. Sound.Constants.hw_params_Size) of Standard.Boolean;
    pragma Pack (hw_params_Bits);
    for hw_params_Bits'Size use Sound.Constants.hw_params_Size;
 

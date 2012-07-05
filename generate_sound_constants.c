@@ -62,6 +62,12 @@ int main() {
    printf ("   Format_Signed_16_Bit                 : constant := %d;\n", (int)SND_PCM_FORMAT_S16);
    printf ("   Format_Unsigned_16_Bit               : constant := %d;\n", (int)SND_PCM_FORMAT_U16);
    printf ("\n");
+   printf ("   Access_Memory_Mapped_Interleaved    : constant := %u;\n", (unsigned int)SND_PCM_ACCESS_MMAP_INTERLEAVED);
+   printf ("   Access_Memory_Mapped_Noninterleaved : constant := %u;\n", (unsigned int)SND_PCM_ACCESS_MMAP_NONINTERLEAVED);
+   printf ("   Access_Memory_Mapped_Complex        : constant := %u;\n", (unsigned int)SND_PCM_ACCESS_MMAP_COMPLEX);
+   printf ("   Access_Read_Write_Interleaved       : constant := %u;\n", (unsigned int)SND_PCM_ACCESS_RW_INTERLEAVED);
+   printf ("   Access_Read_Write_Noninterleaved    : constant := %u;\n", (unsigned int)SND_PCM_ACCESS_RW_NONINTERLEAVED);
+   printf ("\n");
    printf ("   Error_Bad_File_Descriptor : constant := %u;\n", (unsigned int)EBADFD);
    printf ("   Error_Pipe                : constant := %u;\n", (unsigned int)EPIPE);
    printf ("   Error_Stream_Pipe         : constant := %u;\n", (unsigned int)ESTRPIPE);

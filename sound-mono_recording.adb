@@ -4,9 +4,11 @@ with
   Interfaces.C.Strings;
 
 package body Sound.Mono_Recording is
-   procedure Open (Line       : in out Line_Type;
-                   Resolution : in out Sample_Frequency) is
-      use Interfaces.C, Interfaces.C.Strings;
+   procedure Open (Line        : in out Line_Type;
+                   Resolution  : in out Sample_Frequency;
+                   Buffer_Size : in out Duration;
+                   Period      : in out Duration) is
+      use Interfaces.C, Interfaces.C.Strings, Sound.ALSA;
       Name       : aliased char_array := To_C ("plughw:0,0");
       Error      : Interfaces.C.int;
       Local_Line : aliased Line_Type := Line;
@@ -20,13 +22,68 @@ package body Sound.Mono_Recording is
          raise Program_Error with "Error code (snd_pcm_open): " & Error'Img;
       end if;
 
-      Error := snd_pcm_hw_params_any (pcm    => Local_Line,
-                                      params => Settings'Access);
+  Clear_Settings:
+      begin
+         Error := snd_pcm_hw_params_any (pcm    => Local_Line,
+                                         params => Settings'Access);
 
-      if Error /= 0 then
-         raise Program_Error with
-           "Error code (snd_pcm_hw_params_any): " & Error'Img;
-      end if;
+         if Error /= 0 then
+            raise Program_Error with
+              "Error code (snd_pcm_hw_params_any): " & Error'Img;
+         end if;
+      end Clear_Settings;
+
+  Set_Resampling_Rate:
+      begin
+         Error := snd_pcm_hw_params_set_rate_resample
+                    (pcm    => Local_Line,
+                     params => Settings'Access,
+                     val    => False);
+
+         if Error /= 0 then
+            raise Program_Error with
+              "Error code (snd_pcm_hw_params_set_rate_resample): " & Error'Img;
+         end if;
+      end Set_Resampling_Rate;
+
+  Set_Sampling_Layout:
+      begin
+         Error := snd_pcm_hw_params_set_access
+                    (pcm    => Local_Line,
+                     params => Settings'Access,
+                     val    => Read_Write_Interleaved);
+
+         if Error /= 0 then
+            raise Program_Error with
+              "Error code (snd_pcm_hw_params_set_access): " & Error'Img;
+         end if;
+      end Set_Sampling_Layout;
+
+  Set_Recording_Format:
+      begin
+         Error := snd_pcm_hw_params_set_format
+                    (pcm    => Local_Line,
+                     params => Settings'Access,
+                     format => Sound.ALSA.Unsigned_16_Bit);
+
+         if Error /= 0 then
+            raise Program_Error with
+              "Error code (snd_pcm_hw_params_set_format): " & Error'Img;
+         end if;
+      end Set_Recording_Format;
+
+  Set_Channel_Count:
+      begin
+         Error := snd_pcm_hw_params_set_channels
+                    (pcm    => Local_Line,
+                     params => Settings'Access,
+                     val    => 1);
+
+         if Error /= 0 then
+            raise Program_Error with
+              "Error code (snd_pcm_hw_params_set_channels): " & Error'Img;
+         end if;
+      end Set_Channel_Count;
 
   Set_Sample_Frequency:
       declare
@@ -48,17 +105,58 @@ package body Sound.Mono_Recording is
          Resolution := Sample_Frequency (Sample_Rate);
       end Set_Sample_Frequency;
 
-  Set_Recording_Format:
+  Set_Buffer_Time:
+      declare
+         Buffer_Time   : aliased Interfaces.C.unsigned :=
+                           Interfaces.C.unsigned (1_000_000 * Buffer_Size);
+         Approximation : aliased Sound.ALSA.Approximation_Direction := +1;
       begin
-         Error := snd_pcm_hw_params_set_format
+         Error := snd_pcm_hw_params_set_buffer_time_near
                     (pcm    => Local_Line,
                      params => Settings'Access,
-                     format => Sound.ALSA.Unsigned_16_Bit);
+                     val    => Buffer_Time'Access,
+                     dir    => Approximation'Access);
 
          if Error /= 0 then
-            raise Program_Error;
+            raise Program_Error with
+              "Error code (snd_pcm_hw_params_set_buffer_time_near): " &
+              Error'Img;
          end if;
-      end Set_Recording_Format;
+
+         Buffer_Size := Duration (Buffer_Time) / 1_000_000.0;
+      end Set_Buffer_Time;
+
+  Set_Period:
+      declare
+         Period_Time   : aliased Interfaces.C.unsigned :=
+                           Interfaces.C.unsigned (1_000_000 * Period);
+         Approximation : aliased Sound.ALSA.Approximation_Direction := +1;
+      begin
+         Error := snd_pcm_hw_params_set_period_time_near
+                    (pcm    => Local_Line,
+                     params => Settings'Access,
+                     val    => Period_Time'Access,
+                     dir    => Approximation'Access);
+
+         if Error /= 0 then
+            raise Program_Error with
+              "Error code (snd_pcm_hw_params_set_period_time_near): " &
+              Error'Img;
+         end if;
+
+         Period := Duration (Period_Time) / 1_000_000.0;
+      end Set_Period;
+
+  Register_Settings:
+      begin
+         Error := snd_pcm_hw_params (pcm    => Local_Line,
+                                     params => Settings'Access);
+
+         if Error /= 0 then
+            raise Program_Error with
+              "Error code (snd_pcm_hw_params): " & Error'Img;
+         end if;
+      end Register_Settings;
 
       Line := Local_Line;
    end Open;
