@@ -1,0 +1,30 @@
+Ada sound recording API
+=======================
+
+Implemented features:
+ + 16-bit mono recording (Linux)
+
+The library is released under the Beer-Ware License (revision 42).
+
+
+Build procedure:
+----------------
+
+% hg clone http://repositories.jacob-sparre.dk/alsa-binding
+% cd alsa-binding
+% ./configure
+% make
+
+
+Test procedure:
+---------------
+
+% ./test_alsa_binding > sound
+
+
+Limitations:
+------------
+
+ - Currently only with implementations for Linux.
+ - No installation procedure.
+
