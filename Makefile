@@ -1,6 +1,7 @@
 include .config
 
 PROJECT=alsa_binding
+LIBRARY_NAME=adasound
 GENERATED_SOURCE_FILES=sound-constants.ads
 GENERATED_EXECUTABLES=test_alsa_binding microphone_to_wav
 EXECUTABLES=$(GENERATED_EXECUTABLES)
@@ -19,9 +20,12 @@ test: build
 	@echo "Testing not implemented yet."
 
 install: build
+	mkdir -p "$(DESTDIR)$(PREFIX)/share/ada/ada/include/$(LIBRARY_NAME)"
+	install --target "$(DESTDIR)$(PREFIX)/share/ada/ada/include/$(LIBRARY_NAME)" *.ad[sb]
+	mkdir -p "$(DESTDIR)$(PREFIX)/lib/ada/adalib/$(LIBRARY_NAME)"
+	install --target "$(DESTDIR)$(PREFIX)/lib/ada/adalib/$(LIBRARY_NAME)" *.ali
 	mkdir -p "$(DESTDIR)$(PREFIX)/bin"
 	if [ ! -z "$(EXECUTABLES)"     ]; then install --target "$(DESTDIR)$(PREFIX)/bin"             $(EXECUTABLES);     fi
-	if [ ! -z "$(SCRIPT_SETTINGS)" ]; then install --target "$(DESTDIR)$(PREFIX)/bin" --mode=0644 $(SCRIPT_SETTINGS); fi
 
 build-depends:
 	@test "$(DISTRIBUTION)" = "Debian wheezy/sid" && ( dpkg -l libasound2-dev | grep '^ii  libasound2-dev ' 1>/dev/null || sudo apt-get install libasound2-dev ) || true
