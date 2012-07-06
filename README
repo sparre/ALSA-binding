@@ -19,7 +19,13 @@ Build procedure:
 Test procedure:
 ---------------
 
-% ./test_alsa_binding > sound
+Sound as ASCII numbers for visual inspection:
+
+% ./test_alsa_binding > sound.text
+
+Recording a WAV file (hard-coded to fail on big-endian machines):
+
+% ./microphone_to_wav > sound.wav
 
 
 Limitations:
