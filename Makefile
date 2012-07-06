@@ -2,7 +2,7 @@ include .config
 
 PROJECT=alsa_binding
 GENERATED_SOURCE_FILES=sound-constants.ads
-GENERATED_EXECUTABLES=test_alsa_binding
+GENERATED_EXECUTABLES=test_alsa_binding microphone_to_wav
 EXECUTABLES=$(GENERATED_EXECUTABLES)
 SCRIPT_SETTINGS=
 PRECOMPILED_UNITS=

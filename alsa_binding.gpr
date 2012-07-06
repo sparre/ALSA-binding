@@ -1,5 +1,5 @@
 project ALSA_Binding is
-   for Main use ("test_alsa_binding");
+   for Main use ("test_alsa_binding", "microphone_to_wav");
 
    package Linker is
       for Default_Switches ("ada") use ("-lasound");

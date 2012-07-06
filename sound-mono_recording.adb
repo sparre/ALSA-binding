@@ -73,7 +73,7 @@ package body Sound.Mono_Recording is
          Error := snd_pcm_hw_params_set_format
                     (pcm    => Local_Line,
                      params => Settings'Access,
-                     format => Sound.ALSA.Unsigned_16_Bit);
+                     format => Sound.ALSA.Signed_16_Bit);
 
          if Error /= 0 then
             raise Program_Error with
