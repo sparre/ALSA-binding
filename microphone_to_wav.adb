@@ -87,9 +87,8 @@ begin
                               Item => Recording,
                               Last => Filled_To);
 
-   for Index in Recording'First .. Filled_To loop
-      Sound.Mono_Recording.Frame'Write (Target, Recording (Index));
-   end loop;
+   Sound.Mono_Recording.Frame_Array'Write
+     (Target, Recording (Recording'First .. Filled_To));
 
    Sound.Mono_Recording.Close (Line => Microphone);
 end Microphone_To_WAV;
