@@ -3,6 +3,7 @@ Ada sound recording API
 
 Implemented features:
  + 16-bit mono recording (Linux)
+ + 16-bit stereo recording (Linux)
 
 The library is released under the Beer-Ware License (revision 42).
 
@@ -25,7 +26,8 @@ Sound as ASCII numbers for visual inspection:
 
 Recording a WAV file (hard-coded to fail on big-endian machines):
 
-% ./microphone_to_wav > sound.wav
+% ./microphone_to_wav > sound-mono.wav
+% ./record_stereo_wav > sound-stereo.wav
 
 
 Limitations:

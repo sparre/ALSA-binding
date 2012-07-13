@@ -15,7 +15,7 @@ procedure Test_ALSA_Binding is
    Resolution  : Sound.Sample_Frequency := 44_100;
    Buffer_Size : Duration := 0.5;
    Period      : Duration := 0.1;
-   Recording   : Sound.Mono_Recording.Frame_Array (1 .. 44_100);
+   Recording   : Sound.Mono_Recording.Frame_Array (1 .. 44_100 * 10);
    Filled_To   : Natural;
 begin
    Sound.Mono_Recording.Open (Line        => Microphone,
