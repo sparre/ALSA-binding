@@ -12,11 +12,11 @@ with
 with
   Interfaces.C.Strings;
 
-package body Sound.Mono_Recording is
-   procedure Open (Line        : in out Line_Type;
-                   Resolution  : in out Sample_Frequency;
-                   Buffer_Size : in out Duration;
-                   Period      : in out Duration) is
+package body Sound.Mono is
+   procedure Open_In (Line        : in out Line_Type;
+                      Resolution  : in out Sample_Frequency;
+                      Buffer_Size : in out Duration;
+                      Period      : in out Duration) is
       use Interfaces.C, Interfaces.C.Strings, Sound.ALSA;
       Name       : aliased char_array := To_C ("plughw:0,0");
       Error      : Interfaces.C.int;
@@ -168,7 +168,7 @@ package body Sound.Mono_Recording is
       end Register_Settings;
 
       Line := Local_Line;
-   end Open;
+   end Open_In;
 
    function Is_Open (Line : in     Line_Type) return Boolean is
       use Sound.ALSA;
@@ -219,4 +219,4 @@ package body Sound.Mono_Recording is
          Last := Item'First - 1 + Natural (Received_Frame_Count);
       end if;
    end Read;
-end Sound.Mono_Recording;
+end Sound.Mono;

@@ -8,7 +8,7 @@
 --  Jacob Sparre Andersen
 
 with Ada.Text_IO, Ada.Text_IO.Text_Streams;
-with Sound.Mono_Recording;
+with Sound.Mono;
 
 procedure Microphone_To_WAV is
    type Double_Word is mod 2 ** 32;
@@ -32,11 +32,11 @@ procedure Microphone_To_WAV is
       return As_Bytes = (42, 11);
    end Little_Endian;
 
-   Microphone  : Sound.Mono_Recording.Line_Type;
+   Microphone  : Sound.Mono.Line_Type;
    Resolution  : Sound.Sample_Frequency := 44_100;
    Buffer_Size : Duration := 0.5;
    Period      : Duration := 0.1;
-   Recording   : Sound.Mono_Recording.Frame_Array (1 .. 44_100 * 10);
+   Recording   : Sound.Mono.Frame_Array (1 .. 44_100 * 10);
    Filled_To   : Natural;
    Target      : Ada.Text_IO.Text_Streams.Stream_Access;
 begin
@@ -46,10 +46,10 @@ begin
       return;
    end if;
 
-   Sound.Mono_Recording.Open (Line        => Microphone,
-                              Resolution  => Resolution,
-                              Buffer_Size => Buffer_Size,
-                              Period      => Period);
+   Sound.Mono.Open_In (Line        => Microphone,
+                       Resolution  => Resolution,
+                       Buffer_Size => Buffer_Size,
+                       Period      => Period);
 
    Ada.Text_IO.Put_Line
      (File => Ada.Text_IO.Standard_Error,
@@ -83,12 +83,12 @@ begin
    String'Write (Target, "data");
    Double_Word'Write (Target, 2 * Double_Word (Recording'Length));
 
-   Sound.Mono_Recording.Read (Line => Microphone,
+   Sound.Mono.Read (Line => Microphone,
                               Item => Recording,
                               Last => Filled_To);
 
-   Sound.Mono_Recording.Frame_Array'Write
+   Sound.Mono.Frame_Array'Write
      (Target, Recording (Recording'First .. Filled_To));
 
-   Sound.Mono_Recording.Close (Line => Microphone);
+   Sound.Mono.Close (Line => Microphone);
 end Microphone_To_WAV;

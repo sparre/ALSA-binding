@@ -9,7 +9,7 @@
 
 private with Sound.ALSA;
 
-package Sound.Mono_Recording is
+package Sound.Mono is
    type Line_Type is private;
 
    type Frame is range - 2 ** 15 .. 2 ** 15 - 1;
@@ -17,10 +17,10 @@ package Sound.Mono_Recording is
    type Frame_Array is array (Positive range <>) of aliased Frame;
    pragma Convention (C, Frame_Array);
 
-   procedure Open (Line        : in out Line_Type;
-                   Resolution  : in out Sample_Frequency;
-                   Buffer_Size : in out Duration;
-                   Period      : in out Duration);
+   procedure Open_In (Line        : in out Line_Type;
+                      Resolution  : in out Sample_Frequency;
+                      Buffer_Size : in out Duration;
+                      Period      : in out Duration);
    function Is_Open (Line : in     Line_Type) return Boolean;
    procedure Close (Line : in out Line_Type);
    procedure Read (Line : in     Line_Type;
@@ -28,4 +28,4 @@ package Sound.Mono_Recording is
                    Last :    out Natural);
 private
    type Line_Type is new Sound.ALSA.snd_pcm_t_ptr;
-end Sound.Mono_Recording;
+end Sound.Mono;
