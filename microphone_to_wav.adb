@@ -46,10 +46,11 @@ begin
       return;
    end if;
 
-   Sound.Mono.Open_In (Line        => Microphone,
-                       Resolution  => Resolution,
-                       Buffer_Size => Buffer_Size,
-                       Period      => Period);
+   Sound.Mono.Open (Line        => Microphone,
+                    Mode        => Sound.Input,
+                    Resolution  => Resolution,
+                    Buffer_Size => Buffer_Size,
+                    Period      => Period);
 
    Ada.Text_IO.Put_Line
      (File => Ada.Text_IO.Standard_Error,

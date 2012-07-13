@@ -17,15 +17,19 @@ package Sound.Mono is
    type Frame_Array is array (Positive range <>) of aliased Frame;
    pragma Convention (C, Frame_Array);
 
-   procedure Open_In (Line        : in out Line_Type;
-                      Resolution  : in out Sample_Frequency;
-                      Buffer_Size : in out Duration;
-                      Period      : in out Duration);
+   procedure Open (Line        : in out Line_Type;
+                   Mode        : in     Line_Mode;
+                   Resolution  : in out Sample_Frequency;
+                   Buffer_Size : in out Duration;
+                   Period      : in out Duration);
    function Is_Open (Line : in     Line_Type) return Boolean;
    procedure Close (Line : in out Line_Type);
    procedure Read (Line : in     Line_Type;
                    Item :    out Frame_Array;
                    Last :    out Natural);
+   procedure Write (Line : in     Line_Type;
+                    Item : in     Frame_Array;
+                    Last :    out Natural);
 private
    type Line_Type is new Sound.ALSA.snd_pcm_t_ptr;
 end Sound.Mono;

@@ -18,10 +18,11 @@ procedure Test_ALSA_Binding is
    Recording   : Sound.Mono.Frame_Array (1 .. 44_100 * 10);
    Filled_To   : Natural;
 begin
-   Sound.Mono.Open_In (Line        => Microphone,
-                       Resolution  => Resolution,
-                       Buffer_Size => Buffer_Size,
-                       Period      => Period);
+   Sound.Mono.Open (Line        => Microphone,
+                    Mode        => Sound.Input,
+                    Resolution  => Resolution,
+                    Buffer_Size => Buffer_Size,
+                    Period      => Period);
    Ada.Text_IO.Put_Line
      (File => Ada.Text_IO.Standard_Error,
       Item => "Resolution [samples/s]: " &
