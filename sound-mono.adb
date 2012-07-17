@@ -26,8 +26,9 @@ package body Sound.Mono is
    begin
       Error := snd_pcm_open (pcmp   => Local_Line'Access,
                              name   => To_Chars_Ptr (Name'Unchecked_Access),
-                             stream => Sound.ALSA.Capture,
+                             stream => Sound.ALSA.Value (Mode),
                              mode   => 0);
+
       if Error /= 0 then
          raise Program_Error with "Error code (snd_pcm_open): " & Error'Img;
       end if;
@@ -99,7 +100,7 @@ package body Sound.Mono is
       declare
          Sample_Rate   : aliased Interfaces.C.unsigned :=
                            Interfaces.C.unsigned (Resolution);
-         Approximation : aliased Sound.ALSA.Approximation_Direction := +1;
+         Approximation : aliased Sound.ALSA.Approximation_Direction := 0;
       begin
          Error := snd_pcm_hw_params_set_rate_near
                     (pcm    => Local_Line,
@@ -119,7 +120,7 @@ package body Sound.Mono is
       declare
          Buffer_Time   : aliased Interfaces.C.unsigned :=
                            Interfaces.C.unsigned (1_000_000 * Buffer_Size);
-         Approximation : aliased Sound.ALSA.Approximation_Direction := +1;
+         Approximation : aliased Sound.ALSA.Approximation_Direction := 0;
       begin
          Error := snd_pcm_hw_params_set_buffer_time_near
                     (pcm    => Local_Line,
@@ -140,7 +141,7 @@ package body Sound.Mono is
       declare
          Period_Time   : aliased Interfaces.C.unsigned :=
                            Interfaces.C.unsigned (1_000_000 * Period);
-         Approximation : aliased Sound.ALSA.Approximation_Direction := +1;
+         Approximation : aliased Sound.ALSA.Approximation_Direction := 0;
       begin
          Error := snd_pcm_hw_params_set_period_time_near
                     (pcm    => Local_Line,
@@ -208,10 +209,9 @@ package body Sound.Mono is
       use type Sound.ALSA.snd_pcm_sframes_t;
       Received_Frame_Count : Sound.ALSA.snd_pcm_sframes_t;
    begin
-      Received_Frame_Count := snd_pcm_readi
-                                (pcm    => Line,
-                                 buffer => Item,
-                                 size   => Item'Length);
+      Received_Frame_Count := snd_pcm_readi (pcm    => Line,
+                                             buffer => Item,
+                                             size   => Item'Length);
 
       if Received_Frame_Count < 0 then
          raise Program_Error with
@@ -224,7 +224,24 @@ package body Sound.Mono is
    procedure Write (Line : in     Line_Type;
                     Item : in     Frame_Array;
                     Last :    out Natural) is
+      function snd_pcm_writei (pcm    : in     Line_Type;
+                               buffer : in     Frame_Array;
+                               size   : in     ALSA.snd_pcm_uframes_t)
+        return ALSA.snd_pcm_sframes_t;
+      pragma Import (C, snd_pcm_writei);
+
+      use type Sound.ALSA.snd_pcm_sframes_t;
+      Written_Frame_Count : Sound.ALSA.snd_pcm_sframes_t;
    begin
-      raise Program_Error;
+      Written_Frame_Count := snd_pcm_writei (pcm    => Line,
+                                             buffer => Item,
+                                             size   => Item'Length);
+
+      if Written_Frame_Count < 0 then
+         raise Program_Error with
+           "snd_pcm_writei failed: " & Written_Frame_Count'Img;
+      else
+         Last := Item'First - 1 + Natural (Written_Frame_Count);
+      end if;
    end Write;
 end Sound.Mono;

@@ -23,6 +23,9 @@ package Sound.ALSA is
    type snd_pcm_stream_t is (Playback, Capture);
    for snd_pcm_stream_t use (Playback => Sound.Constants.Playback_Stream,
                              Capture  => Sound.Constants.Capture_Stream);
+   Value : constant array (Line_Mode) of snd_pcm_stream_t
+             := (Input  => Capture,
+                 Output => Playback);
 
    type snd_pcm_state_t is (Open, Setup, Prepared, Running, XRun, Draining,
                             Paused, Suspended, Disconnected);
