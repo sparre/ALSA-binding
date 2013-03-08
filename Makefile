@@ -42,7 +42,7 @@ distclean: clean
 	rm -f .config .config.sh
 
 generate_sound_constants: generate_sound_constants.c
-	gnatgcc generate_sound_constants.c -lasound -o generate_sound_constants
+	$(CC) generate_sound_constants.c -lasound -o generate_sound_constants
 
 sound-constants.ads: generate_sound_constants
 	./generate_sound_constants > sound-constants.ads
