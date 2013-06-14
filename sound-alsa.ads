@@ -29,15 +29,16 @@ package Sound.ALSA is
 
    type snd_pcm_state_t is (Open, Setup, Prepared, Running, XRun, Draining,
                             Paused, Suspended, Disconnected);
-   for snd_pcm_state_t use (Open         => Sound.Constants.State_Open,
-                            Setup        => Sound.Constants.State_Setup,
-                            Prepared     => Sound.Constants.State_Prepared,
-                            Running      => Sound.Constants.State_Running,
-                            XRun         => Sound.Constants.State_XRun,
-                            Draining     => Sound.Constants.State_Draining,
-                            Paused       => Sound.Constants.State_Paused,
-                            Suspended    => Sound.Constants.State_Suspended,
-                            Disconnected => Sound.Constants.State_Disconnected);
+   for snd_pcm_state_t
+     use (Open         => Sound.Constants.State_Open,
+          Setup        => Sound.Constants.State_Setup,
+          Prepared     => Sound.Constants.State_Prepared,
+          Running      => Sound.Constants.State_Running,
+          XRun         => Sound.Constants.State_XRun,
+          Draining     => Sound.Constants.State_Draining,
+          Paused       => Sound.Constants.State_Paused,
+          Suspended    => Sound.Constants.State_Suspended,
+          Disconnected => Sound.Constants.State_Disconnected);
 
    type snd_pcm_format_t is (Unknown,
                              Signed_8_Bit,
@@ -82,24 +83,38 @@ package Sound.ALSA is
      (Unknown                       => Sound.Constants.Format_Unknown,
       Signed_8_Bit                  => Sound.Constants.Format_Signed_8_Bit,
       Unsigned_8_Bit                => Sound.Constants.Format_Unsigned_8_Bit,
-      Signed_16_Bit_Little_Endian   => Sound.Constants.Format_Signed_16_Bit_Little_Endian,
-      Signed_16_Bit_Big_Endian      => Sound.Constants.Format_Signed_16_Bit_Big_Endian,
-      Unsigned_16_Bit_Little_Endian => Sound.Constants.Format_Unsigned_16_Bit_Little_Endian,
-      Unsigned_16_Bit_Big_Endian    => Sound.Constants.Format_Unsigned_16_Bit_Big_Endian,
-      Signed_24_Bit_Little_Endian   => Sound.Constants.Format_Signed_24_Bit_Little_Endian,
-      Signed_24_Bit_Big_Endian      => Sound.Constants.Format_Signed_24_Bit_Big_Endian,
-      Unsigned_24_Bit_Little_Endian => Sound.Constants.Format_Unsigned_24_Bit_Little_Endian,
-      Unsigned_24_Bit_Big_Endian    => Sound.Constants.Format_Unsigned_24_Bit_Big_Endian,
-      Signed_32_Bit_Little_Endian   => Sound.Constants.Format_Signed_32_Bit_Little_Endian,
-      Signed_32_Bit_Big_Endian      => Sound.Constants.Format_Signed_32_Bit_Big_Endian,
-      Unsigned_32_Bit_Little_Endian => Sound.Constants.Format_Unsigned_32_Bit_Little_Endian,
-      Unsigned_32_Bit_Big_Endian    => Sound.Constants.Format_Unsigned_32_Bit_Big_Endian,
+      Signed_16_Bit_Little_Endian   =>
+        Sound.Constants.Format_Signed_16_Bit_Little_Endian,
+      Signed_16_Bit_Big_Endian      =>
+        Sound.Constants.Format_Signed_16_Bit_Big_Endian,
+      Unsigned_16_Bit_Little_Endian =>
+        Sound.Constants.Format_Unsigned_16_Bit_Little_Endian,
+      Unsigned_16_Bit_Big_Endian    =>
+        Sound.Constants.Format_Unsigned_16_Bit_Big_Endian,
+      Signed_24_Bit_Little_Endian   =>
+        Sound.Constants.Format_Signed_24_Bit_Little_Endian,
+      Signed_24_Bit_Big_Endian      =>
+        Sound.Constants.Format_Signed_24_Bit_Big_Endian,
+      Unsigned_24_Bit_Little_Endian =>
+        Sound.Constants.Format_Unsigned_24_Bit_Little_Endian,
+      Unsigned_24_Bit_Big_Endian    =>
+        Sound.Constants.Format_Unsigned_24_Bit_Big_Endian,
+      Signed_32_Bit_Little_Endian   =>
+        Sound.Constants.Format_Signed_32_Bit_Little_Endian,
+      Signed_32_Bit_Big_Endian      =>
+        Sound.Constants.Format_Signed_32_Bit_Big_Endian,
+      Unsigned_32_Bit_Little_Endian =>
+        Sound.Constants.Format_Unsigned_32_Bit_Little_Endian,
+      Unsigned_32_Bit_Big_Endian    =>
+        Sound.Constants.Format_Unsigned_32_Bit_Big_Endian,
       FLOAT_Little_Endian           => Sound.Constants.Format_FLOAT_LE,
       FLOAT_Big_Endian              => Sound.Constants.Format_FLOAT_BE,
       FLOAT64_Little_Endian         => Sound.Constants.Format_FLOAT64_LE,
       FLOAT64_Big_Endian            => Sound.Constants.Format_FLOAT64_BE,
-      IEC958_SUBFRAME_Little_Endian => Sound.Constants.Format_IEC958_SUBFRAME_LE,
-      IEC958_SUBFRAME_Big_Endian    => Sound.Constants.Format_IEC958_SUBFRAME_BE,
+      IEC958_SUBFRAME_Little_Endian =>
+        Sound.Constants.Format_IEC958_SUBFRAME_LE,
+      IEC958_SUBFRAME_Big_Endian    =>
+        Sound.Constants.Format_IEC958_SUBFRAME_BE,
       MU_LAW                        => Sound.Constants.Format_MU_LAW,
       A_LAW                         => Sound.Constants.Format_A_LAW,
       IMA_ADPCM                     => Sound.Constants.Format_IMA_ADPCM,
@@ -128,11 +143,14 @@ package Sound.ALSA is
                              Read_Write_Interleaved,
                              Read_Write_Noninterleaved);
    for snd_pcm_access_t use
-     (Memory_Mapped_Interleaved    => Constants.Access_Memory_Mapped_Interleaved,
-      Memory_Mapped_Noninterleaved => Constants.Access_Memory_Mapped_Noninterleaved,
+     (Memory_Mapped_Interleaved    =>
+        Constants.Access_Memory_Mapped_Interleaved,
+      Memory_Mapped_Noninterleaved =>
+        Constants.Access_Memory_Mapped_Noninterleaved,
       Memory_Mapped_Complex        => Constants.Access_Memory_Mapped_Complex,
       Read_Write_Interleaved       => Constants.Access_Read_Write_Interleaved,
-      Read_Write_Noninterleaved    => Constants.Access_Read_Write_Noninterleaved);
+      Read_Write_Noninterleaved    =>
+        Constants.Access_Read_Write_Noninterleaved);
    for snd_pcm_access_t'Size use Interfaces.C.int'Size;
 
    type snd_pcm_hw_params_t is private;

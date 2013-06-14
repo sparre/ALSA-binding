@@ -20,6 +20,9 @@ procedure Microphone_To_WAV is
    type Byte is mod 2 ** 8;
    for Byte'Size use 8;
 
+   function Little_Endian return Boolean;
+   --  Checks if we are running on a little-endian architecture.
+
    function Little_Endian return Boolean is
       type Word_As_Bytes is array (1 .. 2) of Byte;
       for Word_As_Bytes'Size use 16;
@@ -65,12 +68,12 @@ begin
 
    Target :=  Ada.Text_IO.Text_Streams.Stream (Ada.Text_IO.Standard_Output);
 
-   -- RIFF Chunk
+   --  RIFF Chunk
    String'Write (Target, "RIFF");
    Double_Word'Write (Target, 4 + 24 + 8 + 2 * Double_Word (Recording'Length));
    String'Write (Target, "WAVE");
 
-   -- FORMAT Chunk
+   --  FORMAT Chunk
    String'Write (Target, "fmt ");
    Double_Word'Write (Target, 16);
    Word'Write (Target, 1);
@@ -80,7 +83,7 @@ begin
    Word'Write (Target, 2);
    Word'Write (Target, 16);
 
-   -- DATA Chunk
+   --  DATA Chunk
    String'Write (Target, "data");
    Double_Word'Write (Target, 2 * Double_Word (Recording'Length));
 

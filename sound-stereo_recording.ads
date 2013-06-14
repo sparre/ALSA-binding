@@ -12,7 +12,7 @@ private with Sound.ALSA;
 package Sound.Stereo_Recording is
    type Line_Type is private;
 
-   type Level is range - 2 ** 15 .. 2 ** 15 - 1;
+   type Level is range -(2 ** 15) .. (2 ** 15) - 1;
    for Level'Size use 16;
 
    type Channel is (Left, Right);

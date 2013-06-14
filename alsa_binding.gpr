@@ -1,8 +1,12 @@
+with "ada_2005";
+
 project ALSA_Binding is
    for Main use ("test_alsa_binding",
                  "microphone_to_wav",
                  "record_stereo_wav",
                  "play_mono");
+
+   package Compiler renames Ada_2005.Compiler;
 
    package Linker is
       for Default_Switches ("ada") use ("-lasound");

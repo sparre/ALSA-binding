@@ -20,6 +20,21 @@ procedure Record_Stereo_WAV is
    type Byte is mod 2 ** 8;
    for Byte'Size use 8;
 
+   function Little_Endian return Boolean;
+   --  Checks if we are running on a little-endian architecture.
+
+   procedure Write_RIFF
+     (Target : in     Ada.Text_IO.Text_Streams.Stream_Access;
+      Data   : in     Sound.Stereo_Recording.Frame_Array);
+
+   procedure Write_Format
+     (Target           : in     Ada.Text_IO.Text_Streams.Stream_Access;
+      Sample_Frequency : in     Sound.Sample_Frequency);
+
+   procedure Write_Data
+     (Target : in     Ada.Text_IO.Text_Streams.Stream_Access;
+      Data : in     Sound.Stereo_Recording.Frame_Array);
+
    function Little_Endian return Boolean is
       type Word_As_Bytes is array (1 .. 2) of Byte;
       for Word_As_Bytes'Size use 16;
@@ -32,23 +47,36 @@ procedure Record_Stereo_WAV is
       return As_Bytes = (42, 11);
    end Little_Endian;
 
-   procedure Write_RIFF (Target : in     Ada.Text_IO.Text_Streams.Stream_Access;
-                         Data   : in     Sound.Stereo_Recording.Frame_Array) is
-   begin
-      String'Write (Target, "RIFF");
-      Double_Word'Write (Target, 4 + 24 + 8 + Data'Size / 8);
-      String'Write (Target, "WAVE");
-   end Write_RIFF;
-
    Bits_Per_Sample    : constant      := Sound.Stereo_Recording.Level'Size;
-   Number_Of_Channels : constant Word := Sound.Stereo_Recording.Frame'Size / Bits_Per_Sample;
-   Block_Alignment    : constant Word := Number_Of_Channels * Bits_Per_Sample / 8;
+   Number_Of_Channels : constant Word :=
+                          Sound.Stereo_Recording.Frame'Size / Bits_Per_Sample;
+   Block_Alignment    : constant Word :=
+                          Number_Of_Channels * Bits_Per_Sample / 8;
+
+   procedure Write_Data
+     (Target : in     Ada.Text_IO.Text_Streams.Stream_Access;
+      Data : in     Sound.Stereo_Recording.Frame_Array) is
+      Number_Of_Samples : constant Double_Word := Data'Length;
+   begin
+      String'Write
+        (Target,
+         "data");
+      Double_Word'Write
+        (Target,
+         Number_Of_Samples * Double_Word (Number_Of_Channels)
+           * Bits_Per_Sample / 8);
+      Sound.Stereo_Recording.Frame_Array'Write
+        (Target,
+         Data);
+   end Write_Data;
 
    procedure Write_Format
      (Target           : in     Ada.Text_IO.Text_Streams.Stream_Access;
       Sample_Frequency : in     Sound.Sample_Frequency) is
-      Sample_Rate        : constant Double_Word := Double_Word (Sample_Frequency);
-      Byte_Rate          : constant Double_Word := Sample_Rate * Double_Word (Number_Of_Channels) * Bits_Per_Sample / 8;
+      Sample_Rate        : constant Double_Word := Double_Word
+                                                     (Sample_Frequency);
+      Byte_Rate          : constant Double_Word :=
+        Sample_Rate * Double_Word (Number_Of_Channels) * Bits_Per_Sample / 8;
    begin
       String'Write      (Target, "fmt ");
       Double_Word'Write (Target, 16);
@@ -60,14 +88,14 @@ procedure Record_Stereo_WAV is
       Word'Write        (Target, Bits_Per_Sample);
    end Write_Format;
 
-   procedure Write_Data (Target : in     Ada.Text_IO.Text_Streams.Stream_Access;
-                         Data : in     Sound.Stereo_Recording.Frame_Array) is
-      Number_Of_Samples : constant Double_Word := Data'Length;
+   procedure Write_RIFF
+     (Target : in     Ada.Text_IO.Text_Streams.Stream_Access;
+      Data   : in     Sound.Stereo_Recording.Frame_Array) is
    begin
-      String'Write                             (Target, "data");
-      Double_Word'Write                        (Target, Number_Of_Samples * Double_Word (Number_Of_Channels) * Bits_Per_Sample / 8);
-      Sound.Stereo_Recording.Frame_Array'Write (Target, Data);
-   end Write_Data;
+      String'Write (Target, "RIFF");
+      Double_Word'Write (Target, 4 + 24 + 8 + Data'Size / 8);
+      String'Write (Target, "WAVE");
+   end Write_RIFF;
 
    Microphone  : Sound.Stereo_Recording.Line_Type;
    Resolution  : Sound.Sample_Frequency := 48_000;
@@ -102,7 +130,8 @@ begin
    while Filled_To < Recording'Last loop
       Sound.Stereo_Recording.Read
         (Line => Microphone,
-         Item => Recording (Filled_To + 1 .. Positive'Min (Recording'Last, Filled_To + 3000)),
+         Item => Recording (Filled_To + 1 ..
+                            Positive'Min (Recording'Last, Filled_To + 3000)),
          Last => Filled_To);
    end loop;
 

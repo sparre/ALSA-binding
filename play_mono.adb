@@ -38,8 +38,8 @@ begin
       Note_Level       : constant := 10_000;
       Note_Half_Length : constant Positive :=
                            (Positive (Resolution) / Note_Frequency) / 2;
-      Note      : Sound.Mono.Frame_Array (- Note_Half_Length ..
-                                          + Note_Half_Length);
+      Note      : Sound.Mono.Frame_Array (-Note_Half_Length ..
+                                          +Note_Half_Length);
       Played_To : Integer;
    begin
       for Index in Note'Range loop
@@ -50,7 +50,7 @@ begin
       loop
          Played_To := Note'First - 1;
 
-     Play_Full_Note:
+         Play_Full_Note :
          while Played_To < Note'Last loop
             Sound.Mono.Write (Line => Speakers,
                               Item => Note (Played_To + 1 .. Note'Last),
@@ -58,6 +58,4 @@ begin
          end loop Play_Full_Note;
       end loop;
    end;
-
-   Sound.Mono.Close (Line => Speakers);
 end Play_Mono;

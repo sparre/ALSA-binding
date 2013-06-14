@@ -12,7 +12,7 @@ private with Sound.ALSA;
 package Sound.Mono is
    type Line_Type is private;
 
-   type Frame is range - 2 ** 15 .. 2 ** 15 - 1;
+   type Frame is range -(2 ** 15) .. (2 ** 15) - 1;
    for Frame'Size use 16;
    type Frame_Array is array (Integer range <>) of aliased Frame;
    pragma Convention (C, Frame_Array);

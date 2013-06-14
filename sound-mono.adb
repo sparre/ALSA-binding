@@ -8,11 +8,32 @@
 --  Jacob Sparre Andersen
 
 with
-  Ada.Text_IO;
-with
   Interfaces.C.Strings;
 
 package body Sound.Mono is
+   procedure Close (Line : in out Line_Type) is
+      use type Interfaces.C.int;
+      Error : Interfaces.C.int;
+   begin
+      Error := snd_pcm_close (Line);
+
+      if Error /= 0 then
+         raise Program_Error with "snd_pcm_close failed: " & Error'Img;
+      end if;
+   end Close;
+
+   function Is_Open (Line : in     Line_Type) return Boolean is
+      use Sound.ALSA;
+   begin
+      case snd_pcm_state (Line) is
+         when Prepared | Running =>
+            return True;
+         when Open | Setup | XRun | Draining | Paused | Suspended
+                | Disconnected =>
+            return False;
+      end case;
+   end Is_Open;
+
    procedure Open (Line        : in out Line_Type;
                    Mode        : in     Line_Mode;
                    Resolution  : in out Sample_Frequency;
@@ -33,7 +54,7 @@ package body Sound.Mono is
          raise Program_Error with "Error code (snd_pcm_open): " & Error'Img;
       end if;
 
-  Clear_Settings:
+      Clear_Settings :
       begin
          Error := snd_pcm_hw_params_any (pcm    => Local_Line,
                                          params => Settings'Access);
@@ -44,7 +65,7 @@ package body Sound.Mono is
          end if;
       end Clear_Settings;
 
-  Set_Resampling_Rate:
+      Set_Resampling_Rate :
       begin
          Error := snd_pcm_hw_params_set_rate_resample
                     (pcm    => Local_Line,
@@ -57,7 +78,7 @@ package body Sound.Mono is
          end if;
       end Set_Resampling_Rate;
 
-  Set_Sampling_Layout:
+      Set_Sampling_Layout :
       begin
          Error := snd_pcm_hw_params_set_access
                     (pcm    => Local_Line,
@@ -70,7 +91,7 @@ package body Sound.Mono is
          end if;
       end Set_Sampling_Layout;
 
-  Set_Recording_Format:
+      Set_Recording_Format :
       begin
          Error := snd_pcm_hw_params_set_format
                     (pcm    => Local_Line,
@@ -83,7 +104,7 @@ package body Sound.Mono is
          end if;
       end Set_Recording_Format;
 
-  Set_Channel_Count:
+      Set_Channel_Count :
       begin
          Error := snd_pcm_hw_params_set_channels
                     (pcm    => Local_Line,
@@ -96,7 +117,7 @@ package body Sound.Mono is
          end if;
       end Set_Channel_Count;
 
-  Set_Sample_Frequency:
+      Set_Sample_Frequency :
       declare
          Sample_Rate   : aliased Interfaces.C.unsigned :=
                            Interfaces.C.unsigned (Resolution);
@@ -116,7 +137,7 @@ package body Sound.Mono is
          Resolution := Sample_Frequency (Sample_Rate);
       end Set_Sample_Frequency;
 
-  Set_Buffer_Time:
+      Set_Buffer_Time :
       declare
          Buffer_Time   : aliased Interfaces.C.unsigned :=
                            Interfaces.C.unsigned (1_000_000 * Buffer_Size);
@@ -137,7 +158,7 @@ package body Sound.Mono is
          Buffer_Size := Duration (Buffer_Time) / 1_000_000.0;
       end Set_Buffer_Time;
 
-  Set_Period:
+      Set_Period :
       declare
          Period_Time   : aliased Interfaces.C.unsigned :=
                            Interfaces.C.unsigned (1_000_000 * Period);
@@ -158,7 +179,7 @@ package body Sound.Mono is
          Period := Duration (Period_Time) / 1_000_000.0;
       end Set_Period;
 
-  Register_Settings:
+      Register_Settings :
       begin
          Error := snd_pcm_hw_params (pcm    => Local_Line,
                                      params => Settings'Access);
@@ -171,29 +192,6 @@ package body Sound.Mono is
 
       Line := Local_Line;
    end Open;
-
-   function Is_Open (Line : in     Line_Type) return Boolean is
-      use Sound.ALSA;
-   begin
-      case snd_pcm_state (Line) is
-         when Prepared | Running =>
-            return True;
-         when Open | Setup | XRun | Draining | Paused | Suspended
-                | Disconnected =>
-            return False;
-      end case;
-   end Is_Open;
-
-   procedure Close (Line : in out Line_Type) is
-      use type Interfaces.C.int;
-      Error : Interfaces.C.int;
-   begin
-      Error := snd_pcm_close (Line);
-
-      if Error /= 0 then
-         raise Program_Error with "snd_pcm_close failed: " & Error'Img;
-      end if;
-   end Close;
 
    procedure Read (Line : in     Line_Type;
                    Item :    out Frame_Array;
