@@ -5,7 +5,7 @@ abstract project Ada_2005 is
       for Default_Switches ("Ada")
         use ("-fstack-check", --  Generate stack checking code (part of Ada)
              "-gnata",        --  Enable assertions            (part of Ada)
-             "-gnato",        --  Overflow checking            (part of Ada)
+             "-gnato13",      --  Overflow checking            (part of Ada)
              "-gnatf",                      --  Full, verbose error messages
              "-gnatwa",                     --  All optional warnings
              "-gnatVa",                     --  All validity checks
