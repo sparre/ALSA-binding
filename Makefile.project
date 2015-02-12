@@ -8,5 +8,3 @@ GENERATED_SOURCES=src/sound-constants.ads
 
 SCRIPTS=
 
-LIBRARY_NAME=adasound
-

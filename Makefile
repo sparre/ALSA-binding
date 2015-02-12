@@ -1,12 +1,14 @@
 include Makefile.project
 -include .config
 
-HG_STATE_SOURCE    = src/$(PROJECT)-mercurial.ads
+HG_STATE_SOURCE    = src/mercurial.ads
 HG_MODIFIER        = `test $$(hg status | wc -c) -gt 0 && echo "plus changes" || echo "as committed"`
 HG_REVISION        = `hg tip --template '{node}' 2>/dev/null || echo N/A`
 GENERATED_SOURCES += $(HG_STATE_SOURCE)
 
 EXECUTABLES=$(GENERATED_EXECUTABLES) $(SCRIPTS)
+
+PREFIX ?= $(HOME)
 
 all: build metrics
 
@@ -18,11 +20,7 @@ test: build metrics
 	@./tests/run
 
 install: build test
-	install -D -t $(DESTDIR)$(PREFIX)/bin/                                  $(EXECUTABLES)
-ifdef LIBRARY_NAME
-	install -D -t $(DESTDIR)$(PREFIX)/share/ada/ada/include/$(LIBRARY_NAME) src/*.ad[sb]
-	install -D -t $(DESTDIR)$(PREFIX)/lib/ada/adalib/$(LIBRARY_NAME)        obj/*.ali
-endif
+	install -D -t $(DESTDIR)$(PREFIX)/bin/ $(EXECUTABLES)
 
 clean:
 	find . \( -name "*~" -o -name "*.bak" -o -name "*.o" -o -name "*.ali" \) -type f -print0 | xargs -0 -r /bin/rm
@@ -44,10 +42,10 @@ metrics:
 	@gnat metric -P $(PROJECT)
 
 $(HG_STATE_SOURCE): Makefile .hg/hgrc .hg/dirstate
-	@echo 'package $(PROJECT).Mercurial is'                      >  $(HG_STATE_SOURCE)
+	@echo 'package Mercurial is'                                 >  $(HG_STATE_SOURCE)
 	@echo '   Revision : constant String (1 .. 53) :='           >> $(HG_STATE_SOURCE)
 	@echo '                "'$(HG_REVISION)' '$(HG_MODIFIER)'";' >> $(HG_STATE_SOURCE)
-	@echo 'end $(PROJECT).Mercurial;'                            >> $(HG_STATE_SOURCE)
+	@echo 'end Mercurial;'                                       >> $(HG_STATE_SOURCE)
 
 -include Makefile.project_rules
 

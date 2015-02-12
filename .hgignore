@@ -20,7 +20,7 @@ tests/*/*.output
 obj/*.ad[sb].metrix
 
 # Generated source files:
-src/alsa_binding-mercurial.ads
+src/mercurial.ads
 src/sound-constants.ads
 
 # Generated object files:
