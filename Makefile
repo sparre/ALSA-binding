@@ -1,4 +1,4 @@
-include .config
+PREFIX ?= /usr/local
 
 PROJECT=alsa_binding
 LIBRARY_NAME=adasound
@@ -35,7 +35,6 @@ style-check:
 
 distclean: clean
 	rm -f $(GENERATED_EXECUTABLES) $(GENERATED_SOURCE_FILES)
-	rm -f .config .config.sh
 
 generate_sound_constants: generate_sound_constants.c
 	$(CC) generate_sound_constants.c -lasound -o generate_sound_constants
