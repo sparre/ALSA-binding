@@ -1,47 +1,54 @@
-PREFIX ?= /usr/local
+include Makefile.project
+-include .config
 
-PROJECT=alsa_binding
-LIBRARY_NAME=adasound
-GENERATED_SOURCE_FILES=sound-constants.ads
-GENERATED_EXECUTABLES=test_alsa_binding microphone_to_wav record_stereo_wav
-EXECUTABLES=$(GENERATED_EXECUTABLES)
-SCRIPT_SETTINGS=
-PRECOMPILED_UNITS=
+HG_STATE_SOURCE    = src/$(PROJECT)-mercurial.ads
+HG_MODIFIER        = `test $$(hg status | wc -c) -gt 0 && echo "plus changes" || echo "as committed"`
+HG_REVISION        = `hg tip --template '{node}' 2>/dev/null || echo N/A`
+GENERATED_SOURCES += $(HG_STATE_SOURCE)
 
-all: build
+EXECUTABLES=$(GENERATED_EXECUTABLES) $(SCRIPTS)
+
+all: build metrics
+
+build: fix-whitespace $(GENERATED_SOURCES)
+	gnatmake -p -P $(PROJECT)
+
+test: build metrics
+	@./tests/build
+	@./tests/run
+
+install: build test
+	install -D -t $(DESTDIR)$(PREFIX)/bin/                                  $(EXECUTABLES)
+ifdef LIBRARY_NAME
+	install -D -t $(DESTDIR)$(PREFIX)/share/ada/ada/include/$(LIBRARY_NAME) src/*.ad[sb]
+	install -D -t $(DESTDIR)$(PREFIX)/lib/ada/adalib/$(LIBRARY_NAME)        obj/*.ali
+endif
 
 clean:
-	rm -f *.o *.ali b~*.ads b~*.adb
-
-build: style-check build-depends $(GENERATED_SOURCE_FILES) $(SCRIPT_SETTINGS) $(PRECOMPILED_UNITS) FORCE
-	gnatmake $(shell echo $(GNATMAKE_ARGS)) -P $(PROJECT)
-
-test: build
-	@echo "Testing not implemented yet."
-
-install: build
-	mkdir -p "$(DESTDIR)$(PREFIX)/share/ada/ada/include/$(LIBRARY_NAME)"
-	install --target "$(DESTDIR)$(PREFIX)/share/ada/ada/include/$(LIBRARY_NAME)" *.ad[sb]
-	mkdir -p "$(DESTDIR)$(PREFIX)/lib/ada/adalib/$(LIBRARY_NAME)"
-	install --target "$(DESTDIR)$(PREFIX)/lib/ada/adalib/$(LIBRARY_NAME)" *.ali
-	mkdir -p "$(DESTDIR)$(PREFIX)/bin"
-	if [ ! -z "$(EXECUTABLES)"     ]; then install --target "$(DESTDIR)$(PREFIX)/bin"             $(EXECUTABLES);     fi
-
-build-depends:
-	@( dpkg -l libasound2-dev | grep '^ii  libasound2-dev ' 1>/dev/null || sudo apt-get install libasound2-dev ) || echo "Needs 'libasound2-dev'."
-
-style-check:
-	@if egrep -l '	| $$' *.ad? | grep -v '^b[~]'; then echo "Please remove tabs and end-of-line spaces from the source files listed above."; false; fi
+	find . \( -name "*~" -o -name "*.bak" -o -name "*.o" -o -name "*.ali" \) -type f -print0 | xargs -0 -r /bin/rm
+	if [ ! -z "$(GENERATED_SOURCES)" ]; then rm -rf $(GENERATED_SOURCES); fi
+	rmdir bin || true
+	rmdir obj || true
 
 distclean: clean
-	rm -f $(GENERATED_EXECUTABLES) $(GENERATED_SOURCE_FILES)
+	gnatclean -P $(PROJECT) || true
+	rm -f $(GENERATED_EXECUTABLES)
+	rm -f obj/*.ad[sb].metrix
+	rmdir bin || true
+	rmdir obj || true
 
-generate_sound_constants: generate_sound_constants.c
-	$(CC) generate_sound_constants.c -lasound -o generate_sound_constants
+fix-whitespace:
+	@find src tests -name '*.ad?' | xargs --no-run-if-empty egrep -l '	| $$' | grep -v '^b[~]' | xargs --no-run-if-empty perl -i -lpe 's|	|        |g; s| +$$||g'
 
-sound-constants.ads: generate_sound_constants
-	./generate_sound_constants > sound-constants.ads
+metrics:
+	@gnat metric -P $(PROJECT)
 
-.PHONY: FORCE
-FORCE:
+$(HG_STATE_SOURCE): Makefile .hg/hgrc .hg/dirstate
+	@echo 'package $(PROJECT).Mercurial is'                      >  $(HG_STATE_SOURCE)
+	@echo '   Revision : constant String (1 .. 53) :='           >> $(HG_STATE_SOURCE)
+	@echo '                "'$(HG_REVISION)' '$(HG_MODIFIER)'";' >> $(HG_STATE_SOURCE)
+	@echo 'end $(PROJECT).Mercurial;'                            >> $(HG_STATE_SOURCE)
 
+-include Makefile.project_rules
+
+.PHONY: all build test install clean distclean fix-whitespace metrics

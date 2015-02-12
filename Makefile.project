@@ -1,0 +1,12 @@
+PROJECT=alsa_binding
+
+GENERATED_EXECUTABLES=bin/microphone_to_wav \
+                      bin/record_stereo_wav \
+                      bin/test_alsa_binding
+
+GENERATED_SOURCES=src/sound-constants.ads
+
+SCRIPTS=
+
+LIBRARY_NAME=adasound
+

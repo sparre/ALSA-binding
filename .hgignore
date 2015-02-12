@@ -1,13 +1,37 @@
 syntax: glob
-*.o
-*.ali
+
+# Temporary files from editors:
 *~
+.\#*
+\#*\#
 .*.swp
-.config
-.config.sh
-generate_sound_constants
-sound-constants.ads
-test_alsa_binding
-microphone_to_wav
-record_stereo_wav
-play_mono
+
+# Output from tests:
+tests/build.status
+tests/run.status
+tests/*/*.errors
+tests/*/*.output
+
+# Generated test executables:
+
+# Test output to clean up:
+
+# Output from source text metric analysis:
+obj/*.ad[sb].metrix
+
+# Generated source files:
+src/alsa_binding-mercurial.ads
+src/sound-constants.ads
+
+# Generated object files:
+obj/*.ali
+obj/*.o
+
+# Generated executables:
+build_tools/generate_sound_constants
+bin/generate_sound_constants
+bin/microphone_to_wav
+bin/play_mono
+bin/record_stereo_wav
+bin/test_alsa_binding
+
