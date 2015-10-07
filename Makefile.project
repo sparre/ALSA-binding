@@ -1,4 +1,4 @@
-PROJECT=alsa_binding
+PROJECT=ALSA_Binding
 
 GENERATED_EXECUTABLES=bin/microphone_to_wav \
                       bin/record_stereo_wav \
@@ -7,4 +7,6 @@ GENERATED_EXECUTABLES=bin/microphone_to_wav \
 GENERATED_SOURCES=src/sound-constants.ads
 
 SCRIPTS=
+
+TEST_OUTPUT=tests/results
 
