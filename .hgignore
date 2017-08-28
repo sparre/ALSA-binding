@@ -16,9 +16,6 @@ tests/*/*.output
 
 # Test output to clean up:
 
-# Output from source text metric analysis:
-obj/*.ad[sb].metrix
-
 # Generated source files:
 src/alsa_binding-mercurial.ads
 src/alsa_binding.ads
