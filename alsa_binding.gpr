@@ -1,15 +1,13 @@
---  O mighty Emacs, please use -*- Ada -*- mode in this lowly file.
-
 with "ada_2005";
 
 project ALSA_Binding is
    for Source_Dirs use ("src/");
 
-   for Main use ("alsa_binding-mercurial",
-                 "test_alsa_binding",
-                 "microphone_to_wav",
-                 "record_stereo_wav",
-                 "play_mono");
+   for Main use ("alsa_binding-mercurial.ads",
+                 "test_alsa_binding.adb",
+                 "microphone_to_wav.adb",
+                 "record_stereo_wav.adb",
+                 "play_mono.adb");
 
    package Builder  renames Ada_2005.Builder;
    package Compiler renames Ada_2005.Compiler;

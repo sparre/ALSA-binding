@@ -20,12 +20,12 @@ PROCESSORS ?= `(test -f /proc/cpuinfo && grep -c ^processor /proc/cpuinfo) || ec
 REPOSITORY_STATE  = .hg/dirstate
 REPOSITORY_CONFIG = .hg/hgrc
 
-all: build metrics
+all: build
 
 build: build-depends fix-whitespace $(GENERATED_SOURCES)
 	gnatmake -j$(PROCESSORS) -p -P $(LC_PROJECT)
 
-test: build metrics $(EXECUTABLES)
+test: build $(EXECUTABLES)
 	@mkdir -p tests/results
 	@./tests/build
 	@./tests/run
@@ -57,9 +57,6 @@ build-depends:
 fix-whitespace:
 	@find src tests -name '*.ad?' | xargs egrep -l '	| $$' | grep -v '^b[~]' | xargs perl -i -lpe 's|	|        |g; s| +$$||g' 2>/dev/null || true
 
-metrics:
-	@gnat metric -j$(PROCESSORS) -P $(LC_PROJECT)
-
 $(REPOSITORY_CONFIG):
 	@mkdir -p $(shell dirname $(REPOSITORY_CONFIG))
 	@touch $(REPOSITORY_CONFIG)
@@ -82,5 +79,5 @@ $(HG_STATE_SOURCE): Makefile $(REPOSITORY_CONFIG) $(REPOSITORY_STATE) $(PROJECT_
 
 -include Makefile.project_rules
 
-.PHONY: all build test install clean distclean build-depends fix-whitespace metrics
+.PHONY: all build test install clean distclean build-depends fix-whitespace
 

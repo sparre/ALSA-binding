@@ -1,5 +1,3 @@
---  O mighty Emacs, please use -*- Ada -*- mode in this lowly file.
-
 abstract project Ada_2005 is
    for Source_Dirs use ();
 
