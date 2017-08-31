@@ -27,7 +27,6 @@ Build procedure
 
     hg clone http://repositories.jacob-sparre.dk/alsa-binding
     cd alsa-binding
-    ./configure
     make
 
 
@@ -36,16 +35,16 @@ Test procedure
 
 Sound as ASCII numbers for visual inspection:
 
-    ./test_alsa_binding > sound.text
+    ./bin/test_alsa_binding > sound.text
 
 Recording a WAV file (hard-coded to fail on big-endian machines):
 
-    ./microphone_to_wav > sound-mono.wav
-    ./record_stereo_wav > sound-stereo.wav
+    ./bin/microphone_to_wav > sound-mono.wav
+    ./bin/record_stereo_wav > sound-stereo.wav
 
 Playing a 2 kHz saw-tooth note:
 
-    ./playmono
+    ./bin/playmono
 
 
 Limitations
